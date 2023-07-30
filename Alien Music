@@ -1,1 +1,63 @@
 
+ALIEN MUSIC - CRYPTO (EASY)
+By hofill
+
+We've intercepted an alien transmission that seems to be composed of sheet music notes. Our lead translator is tone-deaf, our pianist can't spell 'binary', and the guitarist keeps shouting 'hex' in his sleep! Can you help us decode the tune?
+DC# C#D# C#C C#C DC# C#D# E2 C#5 CA EC# CC DE CA EB EC# D#F EF# D6 D#4 CC EC EC CC# D#E CC E4
+Flag format: TFCCTF{l33t_t3xt_h3r3}
+
+This challenge does require some knowledge in music, you only need to know what exactly is one octave of music notes: https://www.masterclass.com/articles/music-101-what-is-an-octave
+Remember, the sharp (AKA hashtag #) belongs to the character before it!
+
+It's purposely exaggerated on binary and hex. So we need to do something with them. 
+We know that the flag format is TFCCTF{...}. As we look at the text, we try to see if the first 6 groups of chars are TFCCTF:
+
+We can see that the first six groups of characters have 2 sets of DC# C#D# C#C respectively, we can examine them with substitute singular letters when DC# (A) C#D# (B) C#C (C)
+The first 6 groups would be ABCCAB. What do you notice? It matches the format of TFCCTF, where A is T, B is F, C is F!
+
+Ok now that we know that we are on the right track, we need to know why DC# C#D# C#C are T, F, C respectively. The question did talk about hexadecimals, so let's work from there. 
+One way we can think of converting Hex to UTF-8 is by ASCII Table: https://www.asciitable.com/, and as we can see that the Hex are paired up as well. 
+Let's try coming up with a way that substitutes the music notes to fit the table and give us the value. 
+
+From the ASCII table, we know that DC# is T --> 54 in hex, C#D# is F --> 46 in hex, C#C is C --> 43 in hex,
+This gives us in hex: 
+D# = 6
+D = 5
+C# = 4
+C = 3
+
+We can see a pattern that from one note to an increasing pitch, the hex representation increases by one. Which gives us:
+F# = 9
+F = 8
+E = 7
+D# = 6
+D = 5
+C# = 4
+C = 3
+B = 2
+A# = 1
+A = 0
+
+Now we see that there are numbers in the encrypted text. We know that Hex has values from 0-9 and A-F, where A-F represents 10-15 in decimal. 
+Since we have yet to represent A-F in hex, we know that the numbers in the encrypted text should represent them. (That's why we can ignore G music note)
+The key should now look like this:
+6 = F
+5 = E
+4 = D
+3 = C
+2 = B
+1 = A
+F# = 9
+F = 8
+E = 7
+D# = 6
+D = 5
+C# = 4
+C = 3
+B = 2
+A# = 1
+A = 0
+
+For example, E2 --> 7B in hex --> { in UTF-8
+
+Now if we convert each pair of notes and mixture of numbers, we would get: TFCCTF{N0t3W0rthy_m3ss4g3}
